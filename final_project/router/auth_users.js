@@ -93,6 +93,33 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     }
 });
 
+regd_users.post("/register", (req, res) => {
+
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({
+            message: "Username and password required"
+        });
+    }
+
+    const userExists = users.some(user => user.username === username);
+
+    if (userExists) {
+        return res.status(409).json({
+            message: "User already exists"
+        });
+    }
+
+    users.push({
+        username: username,
+        password: password
+    });
+
+    return res.status(200).json({
+        message: "User successfully registered"
+    });
+});
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
