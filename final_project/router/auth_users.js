@@ -28,13 +28,10 @@ const authenticatedUser = (username, password) => {
    Only registered users can login
 ================================= */
 regd_users.post("/login", (req, res) => {
-
     const { username, password } = req.body;
 
     if (!username || !password) {
-        return res.status(400).json({
-            message: "Username and password required"
-        });
+        return res.status(400).json({ message: "Username and password required" });
     }
 
     if (authenticatedUser(username, password)) {
@@ -45,18 +42,16 @@ regd_users.post("/login", (req, res) => {
             { expiresIn: 60 * 60 } // 1 hour
         );
 
-        req.session.authorization = {
-            accessToken
-        };
+        req.session.authorization = { accessToken };
 
+        // <-- return the token here
         return res.status(200).json({
-            message: "User successfully logged in"
+            message: "User successfully logged in",
+            accessToken // return token
         });
 
     } else {
-        return res.status(401).json({
-            message: "Invalid login credentials"
-        });
+        return res.status(401).json({ message: "Invalid login credentials" });
     }
 });
 
@@ -120,6 +115,8 @@ regd_users.post("/register", (req, res) => {
         message: "User successfully registered"
     });
 });
+
+
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
